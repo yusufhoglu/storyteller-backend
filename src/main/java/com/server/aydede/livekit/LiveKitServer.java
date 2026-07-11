@@ -16,7 +16,7 @@ public class LiveKitServer {
     @PostConstruct
     public void start() {
         System.out.println("LiveKit server started on " + liveKitConfig.url());
-        System.out.println("LiveKit API key: " + liveKitConfig.apiKey());
-        System.out.println("LiveKit API secret: " + liveKitConfig.apiSecret());
+        // System.out.println("LiveKit API key: " + liveKitConfig.apiKey());
+        // System.out.println("LiveKit API secret: " + liveKitConfig.apiSecret());
     }
 }

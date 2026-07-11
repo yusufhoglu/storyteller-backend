@@ -28,7 +28,9 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (FirebaseAuthException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write(e.getMessage());
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Unauthorized\",\"code\":\"UNAUTHORIZED\"}");
+            return;
         }
     }
 }
