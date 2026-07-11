@@ -2,6 +2,7 @@ package com.server.aydede.voice;
 
 import java.util.UUID;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,11 @@ public class VoiceController {
     }
 
     @PostMapping
-    public VoiceTokenResponse getTokenResponse(@Valid @RequestBody VoiceTokenRequest request) {
+    public VoiceTokenResponse getTokenResponse(@AuthenticationPrincipal String uid,
+            @Valid @RequestBody(required = false) VoiceTokenRequest request) {
         String roomName = "room-" + UUID.randomUUID();
-        String token = livekitTokenService.generateToken(request.name(), request.identity(), roomName);
+        String displayName = request.name() != null ? request.name() : uid;
+        String token = livekitTokenService.generateToken(displayName, uid, roomName);
 
         return new VoiceTokenResponse(livekitConfig.url(), token, roomName);
     }
