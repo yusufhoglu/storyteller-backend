@@ -19,6 +19,9 @@ import tools.jackson.databind.json.JsonMapper;
 import java.util.UUID;
 import java.time.LocalDateTime;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @Transactional
 public class VoiceSessionService {
@@ -47,11 +50,15 @@ public class VoiceSessionService {
         user.setPlan(UserPlan.FREE);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        log.info("Created new user: firebaseUid={} authProvider={}", firebaseUid, authProvider);
+        return saved;
     }
 
     public VoiceTokenResponse createSession(String firebaseUid, String authProvider,
             VoiceTokenRequest request) throws IOException {
+
+        log.info("Creating voice session: firebaseUid={} authProvider={}", firebaseUid, authProvider);
 
         // user upsert
         User user = userRepository.findByFirebaseUid(firebaseUid)
@@ -60,7 +67,9 @@ public class VoiceSessionService {
         // Limit
         if (user.getPlan() == UserPlan.FREE) {
             long used = voiceSessionRepository.countByUser(user);
-            if (used >= 1) {
+            log.info("Quota check: firebaseUid={} usedSessions={}", firebaseUid, used);
+            if (used >= 10) {
+                log.warn("Quota exceeded: firebaseUid={} usedSessions={}", firebaseUid, used);
                 throw new QuotaExceededException("User has reached the limit of voice sessions");
             }
         }
@@ -88,6 +97,7 @@ public class VoiceSessionService {
 
         livekitDispatchService.dispatchAgent(roomName, firebaseUid, metadata);
         String token = liveKitTokenService.generateToken(displayName, firebaseUid, roomName);
+        log.info("Voice session created: firebaseUid={} room={} status=CREATED", firebaseUid, roomName);
         return new VoiceTokenResponse(liveKitConfig.url(), token, roomName);
 
     }

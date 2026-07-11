@@ -11,35 +11,45 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex,
-            WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.getReasonPhrase(), "RESOURCE_NOT_FOUND",
-                request.getDescription(false), LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
+        @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex,
+                        WebRequest request) {
+                ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.getReasonPhrase(),
+                                "RESOURCE_NOT_FOUND",
+                                request.getDescription(false), LocalDateTime.now());
+                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
 
-    @ExceptionHandler(QuotaExceededException.class)
-    public ResponseEntity<ErrorResponse> handleQuotaExceededException(QuotaExceededException ex,
-            WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase(),
-                "QUOTA_EXCEEDED", request.getDescription(false), LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
-    }
+        @ExceptionHandler(QuotaExceededException.class)
+        public ResponseEntity<ErrorResponse> handleQuotaExceededException(QuotaExceededException ex,
+                        WebRequest request) {
+                ErrorResponse errorResponse = new ErrorResponse(HttpStatus.TOO_MANY_REQUESTS.getReasonPhrase(),
+                                "QUOTA_EXCEEDED", request.getDescription(false), LocalDateTime.now());
+                return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
+        }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                "INTERNAL_SERVER_ERROR",
-                request.getDescription(false), LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+        @ExceptionHandler(WebhookVerificationException.class)
+        public ResponseEntity<ErrorResponse> handleWebhookVerificationException(WebhookVerificationException ex,
+                        WebRequest request) {
+                ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                                "WEBHOOK_VERIFICATION_FAILED", request.getDescription(false), LocalDateTime.now());
+                return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+        }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> LivekitTokenGenerationException(MethodArgumentNotValidException ex,
-            WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), "INVALID_REQUEST",
-                request.getDescription(false), LocalDateTime.now());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
+                ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                                "INTERNAL_SERVER_ERROR",
+                                request.getDescription(false), LocalDateTime.now());
+                return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorResponse> LivekitTokenGenerationException(MethodArgumentNotValidException ex,
+                        WebRequest request) {
+                ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                "INVALID_REQUEST",
+                                request.getDescription(false), LocalDateTime.now());
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
 }

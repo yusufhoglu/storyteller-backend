@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/voice/session")
 public class LivekitDispatchController {
@@ -29,6 +32,7 @@ public class LivekitDispatchController {
             @AuthenticationPrincipal String uid,
             @Valid @RequestBody(required = false) VoiceTokenRequest request) throws IOException {
 
+        log.info("POST /api/voice/session uid={}", uid);
         return voiceSessionService.createSession(uid, "anonymous", request);
 
     }
