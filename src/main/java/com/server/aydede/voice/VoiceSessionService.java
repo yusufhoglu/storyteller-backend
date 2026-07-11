@@ -83,6 +83,7 @@ public class VoiceSessionService {
         session.setAgentName(liveKitConfig.agentName());
         session.setStatus(SessionStatus.CREATED);
         session.setMetadataJson(jsonMapper.writeValueAsString(metadata));
+        session.setCreatedAt(LocalDateTime.now());
         voiceSessionRepository.save(session);
 
         livekitDispatchService.dispatchAgent(roomName, firebaseUid, metadata);
