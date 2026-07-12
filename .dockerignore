@@ -1,0 +1,15 @@
+.git
+.idea
+.vscode
+.cursor
+.gradle
+build
+bin
+out
+.env
+*.md
+HELP.md
+docs
+.gitattributes
+src/test
+src/main/resources/application.properties
