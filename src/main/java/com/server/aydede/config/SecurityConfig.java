@@ -13,19 +13,24 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.http.HttpMethod;
 import java.util.Arrays;
 
+import com.server.aydede.ratelimit.RateLimitFilter;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     private final ConfigProperties configProperties;
+    private final RateLimitFilter rateLimitFilter;
 
-    public SecurityConfig(ConfigProperties configProperties) {
+    public SecurityConfig(ConfigProperties configProperties, RateLimitFilter rateLimitFilter) {
         this.configProperties = configProperties;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .addFilterBefore(new FirebaseAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitFilter, FirebaseAuthFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
