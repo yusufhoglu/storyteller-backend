@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- Local / default: human-readable console with correlation id -->
+    <springProfile name="default | local">
+        <property name="CONSOLE_LOG_PATTERN"
+                  value="%d{HH:mm:ss.SSS} %-5level [%thread] [%X{requestId}] %logger{36} - %msg%n"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        <logger name="com.server.aydede.config.CorrelationIdFilter" level="DEBUG"/>
+    </springProfile>
+
+    <!-- Faz 8 / production: structured JSON logs (Loki, ELK, CloudWatch) -->
+    <springProfile name="json | prod">
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdcKeyName>requestId</includeMdcKeyName>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+        <logger name="com.server.aydede.config.CorrelationIdFilter" level="DEBUG"/>
+    </springProfile>
+</configuration>

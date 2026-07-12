@@ -14,15 +14,21 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 
 @Slf4j
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
 
     private final RateLimitService rateLimitService;
+    private final Counter rateLimitRejected;
 
-    public RateLimitFilter(RateLimitService rateLimitService) {
+    public RateLimitFilter(RateLimitService rateLimitService, MeterRegistry meterRegistry) {
         this.rateLimitService = rateLimitService;
+        this.rateLimitRejected = Counter.builder("aydede.voice.rate_limit.rejected")
+                .description("Requests rejected by rate limit")
+                .register(meterRegistry);
     }
 
     @Override
@@ -76,6 +82,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private void writeTooManyRequests(HttpServletResponse response, long retryAfterSeconds)
             throws IOException {
+        rateLimitRejected.increment();
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
         response.setHeader("Retry-After", String.valueOf(retryAfterSeconds));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

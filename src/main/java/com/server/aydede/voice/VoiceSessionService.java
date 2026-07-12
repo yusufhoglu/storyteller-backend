@@ -18,7 +18,8 @@ import com.server.aydede.common.exception.QuotaExceededException;
 import tools.jackson.databind.json.JsonMapper;
 import java.util.UUID;
 import java.time.LocalDateTime;
-
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,16 +32,20 @@ public class VoiceSessionService {
     private final LiveKitTokenService liveKitTokenService;
     private final LiveKitConfig liveKitConfig;
     private final JsonMapper jsonMapper;
+    private final Counter sessionsCreated;
 
     public VoiceSessionService(UserRepository userRepository, VoiceSessionRepository voiceSessionRepository,
             LivekitDispatchService livekitDispatchService, LiveKitTokenService liveKitTokenService,
-            LiveKitConfig liveKitConfig, JsonMapper jsonMapper) {
+            LiveKitConfig liveKitConfig, JsonMapper jsonMapper, MeterRegistry meterRegistry) {
         this.userRepository = userRepository;
         this.voiceSessionRepository = voiceSessionRepository;
         this.livekitDispatchService = livekitDispatchService;
         this.liveKitTokenService = liveKitTokenService;
         this.liveKitConfig = liveKitConfig;
         this.jsonMapper = jsonMapper;
+        this.sessionsCreated = Counter.builder("aydede.voice.sessions.created")
+                .description("Number of voice sessions created")
+                .register(meterRegistry);
     }
 
     private User createUser(String firebaseUid, String authProvider) {
@@ -97,6 +102,7 @@ public class VoiceSessionService {
 
         livekitDispatchService.dispatchAgent(roomName, firebaseUid, metadata);
         String token = liveKitTokenService.generateToken(displayName, firebaseUid, roomName);
+        sessionsCreated.increment();
         log.info("Voice session created: firebaseUid={} room={} status=CREATED", firebaseUid, roomName);
         return new VoiceTokenResponse(liveKitConfig.url(), token, roomName);
 

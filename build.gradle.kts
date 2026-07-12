@@ -33,6 +33,8 @@ dependencies {
 	implementation("com.auth0:java-jwt:4.4.0")
 	implementation("org.springframework.boot:spring-boot-starter-flyway")
 	implementation("org.springframework.boot:spring-boot-starter-jackson")
+	implementation("io.micrometer:micrometer-registry-prometheus")
+	implementation("net.logstash.logback:logstash-logback-encoder:8.1")
 	runtimeOnly("org.flywaydb:flyway-database-postgresql")
 	runtimeOnly("org.postgresql:postgresql")
 	compileOnly("org.projectlombok:lombok")
