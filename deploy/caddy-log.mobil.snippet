@@ -4,6 +4,8 @@
 #
 # DNS: create A record log.mobil.yusufhocaoglu.site -> VPS IP
 
+# Grafana must publish as "3001:3000" (not 127.0.0.1:3001) so Caddy in Docker
+# can reach the host gateway. Keep UFW closed on 3001.
 log.mobil.yusufhocaoglu.site {
-	reverse_proxy 172.17.0.1:3000
+	reverse_proxy 172.17.0.1:3001
 }

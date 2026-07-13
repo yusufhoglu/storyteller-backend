@@ -49,6 +49,8 @@ services:
     volumes:
       - ./promtail-config.yml:/etc/promtail/config.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Required: Promtail reads json-file logs from the host
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
     command: -config.file=/etc/promtail/config.yml
     depends_on:
       - loki
@@ -57,8 +59,9 @@ services:
   grafana:
     image: grafana/grafana:11.5.2
     ports:
-      # Host-only: public access via Caddy -> log.mobil.yusufhocaoglu.site
-      - "127.0.0.1:3000:3000"
+      # Bind all interfaces so matcher Caddy (Docker → 172.17.0.1) can reach Grafana.
+      # Keep UFW closed on 3001; public access only via https://log.mobil...
+      - "3001:3000"
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}
