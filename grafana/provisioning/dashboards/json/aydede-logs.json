@@ -24,7 +24,7 @@
         {
           "datasource": { "type": "loki", "uid": "loki" },
           "editorMode": "code",
-          "expr": "{container=~\".*storyteller-backend-app.*|.*aydede.*\"}",
+          "expr": "{container=~\".+\"}",
           "queryType": "range",
           "refId": "A"
         }
