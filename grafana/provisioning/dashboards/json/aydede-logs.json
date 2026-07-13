@@ -14,7 +14,7 @@
         "dedupStrategy": "none",
         "enableLogDetails": true,
         "prettifyLogMessage": true,
-        "showCommonLabels": false,
+        "showCommonLabels": true,
         "showLabels": false,
         "showTime": true,
         "sortOrder": "Descending",
@@ -40,5 +40,5 @@
   "timezone": "browser",
   "title": "Aydede Logs",
   "uid": "aydede-logs",
-  "version": 1
+  "version": 2
 }

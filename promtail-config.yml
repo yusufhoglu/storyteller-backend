@@ -26,3 +26,7 @@ scrape_configs:
         target_label: app
     pipeline_stages:
       - docker: {}
+      # Skip historical docker backfill; Loki rejects far-behind entries per stream
+      - drop:
+          older_than: 1h
+          drop_counter_reason: older_than_1h
