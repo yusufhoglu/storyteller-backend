@@ -24,7 +24,7 @@
         {
           "datasource": { "type": "loki", "uid": "loki" },
           "editorMode": "code",
-          "expr": "{container=~\".+\"}",
+          "expr": "{app=\"aydede\"}",
           "queryType": "range",
           "refId": "A"
         }
