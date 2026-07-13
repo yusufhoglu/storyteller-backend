@@ -1,8 +1,9 @@
 HELP.md
 .env
-.gradle
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
 !**/src/main/**/build/
 !**/src/test/**/build/
 application.properties
