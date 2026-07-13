@@ -1,0 +1,9 @@
+# Append this block to matcher Caddyfile:
+#   /app/backend/deploy/Caddyfile
+# Then: docker exec matcher-prod-caddy caddy reload --config /etc/caddy/Caddyfile
+#
+# DNS: create A record log.mobil.yusufhocaoglu.site -> VPS IP
+
+log.mobil.yusufhocaoglu.site {
+	reverse_proxy 172.17.0.1:3000
+}
